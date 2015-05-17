@@ -1,0 +1,17 @@
+http://en.wikipedia.org/wiki/Secure_Remote_Password_protocol
+
+https://cert.startcom.org/
+
+http://en.wikipedia.org/wiki/Password-authenticated_key_agreement
+
+http://en.wikipedia.org/wiki/Public-key_cryptography
+
+http://owncloud.10557.n7.nabble.com/secure-connection-without-ssl-td11815.html
+
+http://security.stackexchange.com/questions/38589/can-https-server-configured-without-a-server-certificate
+
+http://stackoverflow.com/questions/992019/java-256-bit-aes-password-based-encryption
+
+Generate AES key. Encrypt username and hashed password with AES key. Encrypt AES key with public key. 
+AES key size < 63 bytes.
+Send IV, Encrypted AES key, Data to server.
