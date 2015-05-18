@@ -8,7 +8,6 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.nionetframework.common.api.Connection;
 import com.nionetframework.common.api.InterestChangeEvent;
@@ -17,6 +16,7 @@ import com.nionetframework.common.api.PacketOutbound;
 import com.nionetframework.common.implementation._Connection;
 import com.nionetframework.common.implementation._NetworkThread;
 import com.nionetframework.common.logger.Logger;
+import com.nionetframework.server.api.Server;
 import com.nionetframework.server.api.ServerNetworkThread;
 
 public class _ServerNetworkThread extends _NetworkThread implements ServerNetworkThread {
@@ -24,12 +24,12 @@ public class _ServerNetworkThread extends _NetworkThread implements ServerNetwor
 	private String port;
 //	private boolean terminate;
 	private Selector selector;
-	private _Server server;
+	private Server server;
 //	private ConcurrentLinkedQueue<InterestChangeEvent> interestchangevents;
 //	private final ConcurrentLinkedQueue<PacketInbound> inboundQueue;
 //	private final ConcurrentLinkedQueue<PacketOutbound> outboundQueue;
 
-	public _ServerNetworkThread(_Server server, String port) {
+	public _ServerNetworkThread(Server server, String port) {
 		Logger.Log("Initializing ServerNetworkThread...", Logger.MESSAGE);
 		this.server = server;
 		this.port = port;
@@ -103,17 +103,17 @@ public class _ServerNetworkThread extends _NetworkThread implements ServerNetwor
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		Logger.Log("Exiting Loop...", Logger.MESSAGE);
 	}
 
-	private void updateInterests() {
-		while (this.getInterestChangeEvents().size() > 0) {
-			InterestChangeEvent ice = this.getInterestChangeEvents().poll();
-			SelectionKey key = ice.getSocket().keyFor(selector);
-			key.interestOps(ice.getInterests());
-		}
-	}
+
 
 	private void accept(SelectionKey key) {
 		try {
@@ -136,7 +136,7 @@ public class _ServerNetworkThread extends _NetworkThread implements ServerNetwor
 	}
 
 	private void loop() throws Throwable {
-		updateInterests();
+		updateInterests(selector);
 
 		selector.selectNow();
 
@@ -162,22 +162,6 @@ public class _ServerNetworkThread extends _NetworkThread implements ServerNetwor
 
 		}
 
-	}
-
-	public boolean queueInterestChange(InterestChangeEvent e) {
-		return this.getInterestChangeEvents().offer(e);
-	}
-
-	@Override
-	public void offer(PacketOutbound p) {
-		for(Connection c : p.getDestinations()) {
-			((_Connection) c).queue(p);
-		}
-	}
-
-	@Override
-	public PacketInbound poll() {
-		return this.getInboundQueue().poll();
 	}
 
 }

@@ -9,11 +9,6 @@ import com.nionetframework.common.api.Connection;
 import com.nionetframework.common.api.ConnectionManager;
 import com.nionetframework.common.api.NetworkThread;
 import com.nionetframework.common.logger.Logger;
-import com.nionetframework.server.api.ServerNetworkThread;
-import com.nionetframework.server.api.Server;
-import com.nionetframework.server.events.ConnectionCloseEvent;
-import com.nionetframework.server.events.ConnectionNewEvent;
-import com.nionetframework.server.events.ServerEventDispatcher;
 
 public abstract class _ConnectionManager implements ConnectionManager {
 

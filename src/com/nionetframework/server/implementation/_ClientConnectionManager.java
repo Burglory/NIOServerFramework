@@ -8,7 +8,6 @@ import com.nionetframework.common.implementation._Connection;
 import com.nionetframework.common.implementation._ConnectionManager;
 import com.nionetframework.common.logger.Logger;
 import com.nionetframework.server.api.ClientConnectionManager;
-import com.nionetframework.server.api.ServerNetworkThread;
 import com.nionetframework.server.api.Server;
 import com.nionetframework.server.events.ConnectionCloseEvent;
 import com.nionetframework.server.events.ConnectionNewEvent;
@@ -16,21 +15,21 @@ import com.nionetframework.server.events.ServerEventDispatcher;
 
 public class _ClientConnectionManager extends _ConnectionManager implements ClientConnectionManager {
 
-	private _Server _server;
+	private Server server;
 
-	public _ClientConnectionManager(_Server _server) {
+	public _ClientConnectionManager(Server server) {
 		super();
-		this._server = _server;
+		this.server = server;
 	}
 	
 	@Override
 	public Server getServer() {
-		return this._server;
+		return this.server;
 	}
 
 	@Override
 	public NetworkThread getNetworkThread() {
-		return _server.getNetworkThread();
+		return server.getNetworkThread();
 	}
 	
 	@Override

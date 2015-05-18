@@ -4,7 +4,6 @@ import com.nionetframework.common.api.ConnectionManager;
 import com.nionetframework.common.api.NetworkThread;
 import com.nionetframework.common.implementation._ConnectionManager;
 import com.nionetframework.common.logger.Logger;
-import com.nionetframework.server.api.ServerNetworkThread;
 import com.nionetframework.server.api.Server;
 import com.nionetframework.server.util.ServerDefaults;
 
