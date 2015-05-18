@@ -1,9 +1,9 @@
-package com.nionetframework.server.implementation;
+package com.nionetframework.common.implementation;
 
 import java.util.Collection;
 
-import com.nionetframework.server.api.Connection;
-import com.nionetframework.server.api.PacketOutbound;
+import com.nionetframework.common.api.Connection;
+import com.nionetframework.common.api.PacketOutbound;
 
 public class _PacketOutbound extends _Packet implements PacketOutbound {
 

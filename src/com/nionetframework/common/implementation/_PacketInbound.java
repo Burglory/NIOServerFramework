@@ -1,7 +1,7 @@
-package com.nionetframework.server.implementation;
+package com.nionetframework.common.implementation;
 
-import com.nionetframework.server.api.Connection;
-import com.nionetframework.server.api.PacketInbound;
+import com.nionetframework.common.api.Connection;
+import com.nionetframework.common.api.PacketInbound;
 
 public class _PacketInbound extends _Packet implements PacketInbound {
 
@@ -12,7 +12,7 @@ public class _PacketInbound extends _Packet implements PacketInbound {
 		this.source = source;
 	}
 
-	public _PacketInbound(byte[] packet, _Connection source) {
+	public _PacketInbound(byte[] packet, Connection source) {
 		super(new String(packet, _Packet.charset));
 		this.source = source;
 	}

@@ -1,4 +1,4 @@
-package com.nionetframework.server.util;
+package com.nionetframework.common;
 
 public class PacketUtil {
 

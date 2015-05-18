@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import com.nionetframework.server.logger.ServerLogger;
+import com.nionetframework.common.logger.Logger;
 
 public class RegisteredServerEventListener {
 
@@ -46,7 +46,7 @@ public class RegisteredServerEventListener {
 		Class<?>[] types = m.getParameterTypes();
 		if (types.length == 1) {
 			try {
-				ServerLogger.Log("Returning EventClass: " + types[0].getName());
+				Logger.Log("Returning EventClass: " + types[0].getName());
 				if (ServerEvent.class.isAssignableFrom(types[0])) {
 					return (Class<? extends ServerEvent>) types[0];
 				} else {
@@ -66,7 +66,7 @@ public class RegisteredServerEventListener {
 		Collection<Method> result = new ArrayList<Method>();
 		for (Method m : c.getDeclaredMethods()) {
 			if (m.getAnnotation(ServerEvents.class) != null) {
-				ServerLogger.Log("Found an ServerEvent Method: " + m.getName());
+				Logger.Log("Found an ServerEvent Method: " + m.getName());
 				result.add(m);
 			}
 		}
@@ -79,7 +79,7 @@ public class RegisteredServerEventListener {
 		}
 		for (Method m : map.get(e.getClass())) {
 			try {
-				ServerLogger.Log("Dispatching ServerEvent for Method: "
+				Logger.Log("Dispatching ServerEvent for Method: "
 						+ m.getName() + " in Class: "
 						+ m.getDeclaringClass().getName());
 				m.invoke(eventlistener, e);

@@ -1,6 +1,6 @@
 package com.nionetframework.server.events;
 
-import com.nionetframework.server.api.Connection;
+import com.nionetframework.common.api.Connection;
 
 public abstract class ConnectionEvent extends ServerEvent {
 

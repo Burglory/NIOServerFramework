@@ -1,24 +1,21 @@
-package com.nionetframework.server.implementation;
+package com.nionetframework.common.implementation;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.nionetframework.server.api.Connection;
-import com.nionetframework.server.api.ConnectionManager;
-import com.nionetframework.server.api.Packet;
-import com.nionetframework.server.api.PacketInbound;
+import com.nionetframework.common.api.Connection;
+import com.nionetframework.common.api.ConnectionManager;
+import com.nionetframework.common.api.Packet;
+import com.nionetframework.common.api.PacketInbound;
+import com.nionetframework.common.logger.Logger;
 import com.nionetframework.server.api.Server;
-import com.nionetframework.server.util.Logger;
+import com.nionetframework.server.implementation._ServerNetworkThread;
 
-public class _Connection implements Connection {
-
-	private DataOutputStream out;
-	private DataInputStream in;
+public abstract class _Connection implements Connection {
+	
 	private final _ConnectionManager connectionmanager;
 	private final ConcurrentLinkedQueue<Packet> queue;
 	private ByteBuffer writebuf;
@@ -26,38 +23,20 @@ public class _Connection implements Connection {
 	private SocketChannel socketchannel;
 	private ByteBuffer readbuf;
 	private String address;
-	private Server server;
+
 
 	private int redundantLoops = 0;
 
 	public _Connection(_ConnectionManager connectionmanager, SocketChannel s) {
 		this.socketchannel = s;
-		this.server = connectionmanager.getServer();
+
 		this.connectionmanager = connectionmanager;
 		this.queue = new ConcurrentLinkedQueue<Packet>();
-		this.initializeStreams();
 		try {
 			this.address = socketchannel.getRemoteAddress().toString();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private void initializeStreams() {
-		// try {
-		// this.out = new DataOutputStream(socketchannel..getOutputStream());
-		// } catch (IOException e) {
-		// Logger.error("(Connection) Failed creating DataOutputStream for socket: "
-		// + socket.toString());
-		// e.printStackTrace();
-		// }
-		// try {
-		// this.in = new DataInputStream(socket.getInputStream());
-		// } catch (IOException e) {
-		// Logger.error("(Connection) Failed creating DataInputStream for socket: "
-		// + socket.toString());
-		// e.printStackTrace();
-		// }
 	}
 
 	public boolean _read() {
@@ -76,7 +55,7 @@ public class _Connection implements Connection {
 					int packetsize = readbuf.getInt();
 					readbuf = ByteBuffer.allocate(packetsize);
 					if (packetsize == 4)
-						Logger.fatal("(Connection) Detected impossible packetcollission: 4!");
+						Logger.Log("(Connection) Detected impossible packetcollission: 4!", Logger.ERROR);
 				}
 			} else {
 				// Packet buffer.
@@ -92,7 +71,7 @@ public class _Connection implements Connection {
 					readbuf.get(packet);
 					PacketInbound p = new _PacketInbound(packet, this);
 					// Schedule packet for processing.
-					connectionmanager.getServer().getNetworkThread()
+					((_ServerNetworkThread) connectionmanager.getNetworkThread())
 							.getInboundQueue().offer(p);
 					// Prepare to read the next packetsize.
 					readbuf.position(0).limit(4);
@@ -117,11 +96,11 @@ public class _Connection implements Connection {
 					if (!writebuf.hasRemaining()) {
 						writebuf = ByteBuffer.wrap(currentwritepacket
 								.getBytes());
-						((_NetworkThread) ((_Server) server).getNetworkThread())
+						((_ServerNetworkThread) connectionmanager.getNetworkThread())
 								.queueInterestChange(new _InterestChangeEvent(
 										socketchannel, SelectionKey.OP_READ));
 					} else {
-						((_NetworkThread) ((_Server) server).getNetworkThread())
+						((_ServerNetworkThread) connectionmanager.getNetworkThread())
 								.queueInterestChange(new _InterestChangeEvent(
 										socketchannel, SelectionKey.OP_WRITE));
 					}
@@ -132,12 +111,12 @@ public class _Connection implements Connection {
 					}
 					if (!writebuf.hasRemaining() && queue.isEmpty()) {
 						currentwritepacket = null;
-						((_NetworkThread) ((_Server) server).getNetworkThread())
+						((_ServerNetworkThread) connectionmanager.getNetworkThread())
 								.queueInterestChange(new _InterestChangeEvent(
 										socketchannel, SelectionKey.OP_READ));
 					} else {
 						// Focus on writing.
-						// ((_NetworkThread) ((_Server)
+						// ((_ServerNetworkThread) ((_Server)
 						// server).getNetworkThread()).queueInterestChange(
 						// new _InterestChangeEvent(socketchannel,
 						// SelectionKey.OP_WRITE));
@@ -157,12 +136,12 @@ public class _Connection implements Connection {
 					if (!writebuf.hasRemaining()) {
 						writebuf = ByteBuffer.wrap(currentwritepacket
 								.getBytes());
-						// ((_NetworkThread) ((_Server)
+						// ((_ServerNetworkThread) ((_Server)
 						// server).getNetworkThread()).queueInterestChange(
 						// new _InterestChangeEvent(socketchannel,
 						// SelectionKey.OP_READ));
 					} else {
-						// ((_NetworkThread) ((_Server)
+						// ((_ServerNetworkThread) ((_Server)
 						// server).getNetworkThread()).queueInterestChange(
 						// new _InterestChangeEvent(socketchannel,
 						// SelectionKey.OP_WRITE));
@@ -184,10 +163,15 @@ public class _Connection implements Connection {
 		return true;
 	}
 
-	@Override
+	/**
+	 * Sends a {@link Packet} through this {@link Connection}.
+	 * 
+	 * @param p
+	 *            the {@link} Packet to be send.
+	 */
 	public boolean queue(Packet p) {
 		boolean succes = this.queue.offer(p);
-		((_NetworkThread) ((_Server) server).getNetworkThread())
+		((_ServerNetworkThread) connectionmanager.getNetworkThread())
 				.queueInterestChange(new _InterestChangeEvent(socketchannel,
 						SelectionKey.OP_WRITE));
 		return succes;
@@ -197,7 +181,7 @@ public class _Connection implements Connection {
 		try {
 			this.socketchannel.close();
 		} catch (IOException e) {
-			Logger.warning("(Connection) Failed to close the connection manually. Is it already closed?");
+			Logger.Log("(Connection) Failed to close the connection manually. Is it already closed?", Logger.WARNING);
 			e.printStackTrace();
 		}
 	}

@@ -1,21 +1,23 @@
 package com.nionetframework.server.implementation;
 
-import com.nionetframework.server.api.ConnectionManager;
-import com.nionetframework.server.api.NetworkThread;
+import com.nionetframework.common.api.ConnectionManager;
+import com.nionetframework.common.api.NetworkThread;
+import com.nionetframework.common.implementation._ConnectionManager;
+import com.nionetframework.common.logger.Logger;
+import com.nionetframework.server.api.ServerNetworkThread;
 import com.nionetframework.server.api.Server;
-import com.nionetframework.server.logger.ServerLogger;
 import com.nionetframework.server.util.ServerDefaults;
 
 public class _Server implements Server {
 
-	private ConnectionManager connectionmanager;
+	private _ConnectionManager connectionmanager;
 	private boolean terminate;
-	private _NetworkThread networkthread;
+	private _ServerNetworkThread networkthread;
 
 	public _Server() {
-		ServerLogger.Log("Creating Server...", ServerLogger.MESSAGE);
+		Logger.Log("Creating Server...", Logger.MESSAGE);
 
-		this.connectionmanager = new _ConnectionManager(this);
+		this.connectionmanager = new _ClientConnectionManager(this);
 
 		this.terminate = false;
 
@@ -32,23 +34,23 @@ public class _Server implements Server {
 		if (this.networkthread != null) {
 			this.networkthread.terminate();
 		} else {
-			ServerLogger.Log(
+			Logger.Log(
 					"Server cannot be terminated, because it has not started!",
-					ServerLogger.WARNING);
+					Logger.WARNING);
 		}
 	}
 
 	@Override
 	public void start() {
-		this.networkthread = new _NetworkThread(this, ServerDefaults.PORT);
-		ServerLogger.Log("Starting Server...", ServerLogger.MESSAGE);
+		this.networkthread = new _ServerNetworkThread(this, ServerDefaults.PORT);
+		Logger.Log("Starting Server...", Logger.MESSAGE);
 		this.networkthread.run();
 	}
 
 	@Override
 	public void start(String port) {
-		this.networkthread = new _NetworkThread(this, port);
-		ServerLogger.Log("Starting Server...", ServerLogger.MESSAGE);
+		this.networkthread = new _ServerNetworkThread(this, port);
+		Logger.Log("Starting Server...", Logger.MESSAGE);
 		this.networkthread.run();
 	}
 

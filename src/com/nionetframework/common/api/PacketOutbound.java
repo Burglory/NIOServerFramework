@@ -1,4 +1,4 @@
-package com.nionetframework.server.api;
+package com.nionetframework.common.api;
 
 import java.util.Collection;
 
