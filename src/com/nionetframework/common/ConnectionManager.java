@@ -1,4 +1,4 @@
-package com.nionetframework.common.api;
+package com.nionetframework.common;
 
 import java.nio.channels.SocketChannel;
 

@@ -1,4 +1,4 @@
-package com.nionetframework.common.implementation;
+package com.nionetframework.common;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -6,12 +6,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.nionetframework.common.api.Connection;
-import com.nionetframework.common.api.ConnectionManager;
-import com.nionetframework.common.api.Packet;
-import com.nionetframework.common.api.PacketInbound;
 import com.nionetframework.common.logger.Logger;
-import com.nionetframework.server.implementation._ServerNetworkThread;
 
 public abstract class _Connection implements Connection {
 
@@ -104,7 +99,7 @@ public abstract class _Connection implements Connection {
 			readbuffer.get(packet);
 			PacketInbound p = new _PacketInbound(packet, this);
 			// Schedule packet for processing.
-			((_ServerNetworkThread) connectionmanager.getNetworkThread())
+			((_NetworkThread) connectionmanager.getNetworkThread())
 					.getInboundQueue().offer(p);
 			Logger.Log("Received message from: " + this.getAddress()
 					+ " saying: " + p.getData(), Logger.DEBUG);

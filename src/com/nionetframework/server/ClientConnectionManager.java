@@ -1,4 +1,4 @@
-package com.nionetframework.server.api;
+package com.nionetframework.server;
 
 public interface ClientConnectionManager {
 

@@ -1,4 +1,4 @@
-package com.nionetframework.common.api;
+package com.nionetframework.common;
 
 
 public interface PacketInbound extends Packet {

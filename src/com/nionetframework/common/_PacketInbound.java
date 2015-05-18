@@ -1,7 +1,5 @@
-package com.nionetframework.common.implementation;
+package com.nionetframework.common;
 
-import com.nionetframework.common.api.Connection;
-import com.nionetframework.common.api.PacketInbound;
 
 public class _PacketInbound extends _Packet implements PacketInbound {
 

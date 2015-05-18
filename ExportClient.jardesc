@@ -11,13 +11,10 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <javaElement handleIdentifier="=NIOServerFramework/src&lt;com.nionetframework.common.api"/>
+        <file path="/NIOServerFramework/LICENSE"/>
         <javaElement handleIdentifier="=NIOServerFramework/src&lt;com.nionetframework.common.logger"/>
         <javaElement handleIdentifier="=NIOServerFramework/src&lt;com.nionetframework.client.examples"/>
-        <javaElement handleIdentifier="=NIOServerFramework/src&lt;com.nionetframework.server"/>
-        <javaElement handleIdentifier="=NIOServerFramework/src&lt;com.nionetframework.client.implementation"/>
-        <javaElement handleIdentifier="=NIOServerFramework/src&lt;com.nionetframework.common.implementation"/>
-        <file path="/NIOServerFramework/LICENSE"/>
         <javaElement handleIdentifier="=NIOServerFramework/src&lt;com.nionetframework.common"/>
+        <javaElement handleIdentifier="=NIOServerFramework/src&lt;com.nionetframework.client"/>
     </selectedElements>
 </jardesc>

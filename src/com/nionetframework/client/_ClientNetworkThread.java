@@ -1,6 +1,7 @@
-package com.nionetframework.client.implementation;
+package com.nionetframework.client;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.channels.ClosedChannelException;
@@ -10,28 +11,28 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.nionetframework.common.api.Connection;
-import com.nionetframework.common.api.PacketInbound;
-import com.nionetframework.common.api.PacketOutbound;
-import com.nionetframework.common.implementation._Connection;
-import com.nionetframework.common.implementation._NetworkThread;
+import com.nionetframework.common.Connection;
+import com.nionetframework.common.PacketInbound;
+import com.nionetframework.common.PacketOutbound;
+import com.nionetframework.common._Connection;
+import com.nionetframework.common._NetworkThread;
 import com.nionetframework.common.logger.Logger;
 
-public class ClientNetworkThread extends _NetworkThread {
+class _ClientNetworkThread extends _NetworkThread implements ClientNetworkThread {
 
 	private ConcurrentLinkedQueue<PacketInbound> inboundqueue;
 	private ConcurrentLinkedQueue<PacketOutbound> outboundqueue;
-	private Client client;
+	private _Client _Client;
 	private String ip;
 	private String port;
 	private InetSocketAddress address;
 	private Selector selector;
 
-	public ClientNetworkThread(Client client, InetSocketAddress i) {
+	_ClientNetworkThread(_Client _Client, InetSocketAddress address) {
 		this.inboundqueue = new ConcurrentLinkedQueue<PacketInbound>();
 		this.outboundqueue = new ConcurrentLinkedQueue<PacketOutbound>();
-		this.client = client;
-		this.address = i;
+		this._Client = _Client;
+		this.address = address;
 	}
 
 	public ConcurrentLinkedQueue<PacketInbound> getInboundQueue() {
@@ -163,7 +164,7 @@ public class ClientNetworkThread extends _NetworkThread {
 	      Logger.Log("Connected to: " + ch.getRemoteAddress().toString(), Logger.EVENT);
 //	      key.interestOps(key.interestOps() ^ SelectionKey.OP_CONNECT);
 	      SelectionKey readKey = key.interestOps(SelectionKey.OP_WRITE | SelectionKey.OP_READ);
-			Connection newconnection = client.getConnectionManager().addConnection(
+			Connection newconnection = _Client.getConnectionManager().addConnection(
 					ch);
 			readKey.attach(newconnection);
 	    }

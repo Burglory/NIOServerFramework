@@ -1,8 +1,6 @@
-package com.nionetframework.common.implementation;
+package com.nionetframework.common;
 
 import java.nio.channels.SocketChannel;
-
-import com.nionetframework.common.api.InterestChangeEvent;
 
 public class _InterestChangeEvent implements InterestChangeEvent {
 

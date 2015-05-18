@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.nionetframework.common.logger.Logger;
-import com.nionetframework.server.api.ServerNetworkThread;
+import com.nionetframework.server.ServerNetworkThread;
 
 public class ServerEventDispatcher {
 

@@ -1,6 +1,6 @@
 package com.nionetframework.server.events;
 
-import com.nionetframework.common.api.Connection;
+import com.nionetframework.common.Connection;
 
 public class ConnectionCloseEvent extends ConnectionEvent {
 

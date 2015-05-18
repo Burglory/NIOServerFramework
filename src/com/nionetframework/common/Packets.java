@@ -2,14 +2,6 @@ package com.nionetframework.common;
 
 import java.util.Collection;
 
-import com.nionetframework.common.api.Connection;
-import com.nionetframework.common.api.Packet;
-import com.nionetframework.common.api.PacketInbound;
-import com.nionetframework.common.api.PacketOutbound;
-import com.nionetframework.common.implementation._Packet;
-import com.nionetframework.common.implementation._PacketInbound;
-import com.nionetframework.common.implementation._PacketOutbound;
-
 public class Packets {
 
 	public static final Packet generatePacket(String e) {

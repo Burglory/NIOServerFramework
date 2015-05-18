@@ -1,4 +1,4 @@
-package com.nionetframework.server.implementation;
+package com.nionetframework.server;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -9,30 +9,30 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
-import com.nionetframework.common.api.Connection;
-import com.nionetframework.common.api.InterestChangeEvent;
-import com.nionetframework.common.api.PacketInbound;
-import com.nionetframework.common.api.PacketOutbound;
-import com.nionetframework.common.implementation._Connection;
-import com.nionetframework.common.implementation._NetworkThread;
+import com.nionetframework.common.Connection;
+import com.nionetframework.common.InterestChangeEvent;
+import com.nionetframework.common.PacketInbound;
+import com.nionetframework.common.PacketOutbound;
+import com.nionetframework.common._Connection;
+import com.nionetframework.common._NetworkThread;
 import com.nionetframework.common.logger.Logger;
-import com.nionetframework.server.api.Server;
-import com.nionetframework.server.api.ServerNetworkThread;
 
-public class _ServerNetworkThread extends _NetworkThread implements ServerNetworkThread {
+class _ServerNetworkThread extends _NetworkThread implements ServerNetworkThread {
 
 	private String port;
 //	private boolean terminate;
 	private Selector selector;
 	private Server server;
+	private InetSocketAddress address;
 //	private ConcurrentLinkedQueue<InterestChangeEvent> interestchangevents;
 //	private final ConcurrentLinkedQueue<PacketInbound> inboundQueue;
 //	private final ConcurrentLinkedQueue<PacketOutbound> outboundQueue;
 
-	public _ServerNetworkThread(Server server, String port) {
+	_ServerNetworkThread(Server server, InetSocketAddress i) {
+		super();
 		Logger.Log("Initializing ServerNetworkThread...", Logger.MESSAGE);
 		this.server = server;
-		this.port = port;
+		this.address = i;
 
 		Logger.Log("NetworkManager succesfully initialized.",
 				Logger.MESSAGE);
@@ -83,14 +83,13 @@ public class _ServerNetworkThread extends _NetworkThread implements ServerNetwor
 		Logger.Log("Binding to: " + "localhost:" + port,
 				Logger.MESSAGE);
 		try {
-			serverChannel.bind(new InetSocketAddress("localhost", Integer
-					.parseInt(port)));
+			serverChannel.bind(address);
 		} catch (NumberFormatException e1) {
-			Logger.Log("Failed to bind to address: " + "localhost",
+			Logger.Log("Failed to bind to address: " + address.toString(),
 					Logger.FATAL);
 			System.exit(1);
 		} catch (IOException e1) {
-			Logger.Log("Failed to bind to address: " + "localhost",
+			Logger.Log("Failed to bind to address: " + address.toString(),
 					Logger.FATAL);
 			System.exit(1);
 		}

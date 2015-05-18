@@ -1,9 +1,7 @@
-package com.nionetframework.common.implementation;
+package com.nionetframework.common;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
-import com.nionetframework.common.api.Packet;
 
 public class _Packet implements Packet {
 

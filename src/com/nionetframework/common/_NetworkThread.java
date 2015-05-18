@@ -1,14 +1,8 @@
-package com.nionetframework.common.implementation;
+package com.nionetframework.common;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import com.nionetframework.common.api.Connection;
-import com.nionetframework.common.api.InterestChangeEvent;
-import com.nionetframework.common.api.NetworkThread;
-import com.nionetframework.common.api.PacketInbound;
-import com.nionetframework.common.api.PacketOutbound;
 
 public abstract class _NetworkThread implements NetworkThread {
 

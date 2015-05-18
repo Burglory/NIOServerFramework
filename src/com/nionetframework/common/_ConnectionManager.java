@@ -1,13 +1,10 @@
-package com.nionetframework.common.implementation;
+package com.nionetframework.common;
 
 import java.nio.channels.SocketChannel;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.nionetframework.common.api.Connection;
-import com.nionetframework.common.api.ConnectionManager;
-import com.nionetframework.common.api.NetworkThread;
 import com.nionetframework.common.logger.Logger;
 
 public abstract class _ConnectionManager implements ConnectionManager {

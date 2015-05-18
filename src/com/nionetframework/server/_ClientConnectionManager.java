@@ -1,23 +1,21 @@
-package com.nionetframework.server.implementation;
+package com.nionetframework.server;
 
 import java.nio.channels.SocketChannel;
 
-import com.nionetframework.common.api.Connection;
-import com.nionetframework.common.api.NetworkThread;
-import com.nionetframework.common.implementation._Connection;
-import com.nionetframework.common.implementation._ConnectionManager;
+import com.nionetframework.common.Connection;
+import com.nionetframework.common.NetworkThread;
+import com.nionetframework.common._Connection;
+import com.nionetframework.common._ConnectionManager;
 import com.nionetframework.common.logger.Logger;
-import com.nionetframework.server.api.ClientConnectionManager;
-import com.nionetframework.server.api.Server;
 import com.nionetframework.server.events.ConnectionCloseEvent;
 import com.nionetframework.server.events.ConnectionNewEvent;
 import com.nionetframework.server.events.ServerEventDispatcher;
 
-public class _ClientConnectionManager extends _ConnectionManager implements ClientConnectionManager {
+class _ClientConnectionManager extends _ConnectionManager implements ClientConnectionManager {
 
 	private Server server;
 
-	public _ClientConnectionManager(Server server) {
+	_ClientConnectionManager(Server server) {
 		super();
 		this.server = server;
 	}

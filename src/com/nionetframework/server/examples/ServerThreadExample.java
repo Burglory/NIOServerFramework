@@ -1,9 +1,9 @@
 package com.nionetframework.server.examples;
 
-import com.nionetframework.common.api.PacketInbound;
-import com.nionetframework.server.api.Server;
-import com.nionetframework.server.api.ServerNetworkThread;
-import com.nionetframework.server.implementation._ServerNetworkThread;
+import com.nionetframework.common.PacketInbound;
+import com.nionetframework.common._NetworkThread;
+import com.nionetframework.server.Server;
+import com.nionetframework.server.ServerNetworkThread;
 
 /** Example Class that processes incoming Packets. */
 public abstract class ServerThreadExample implements Runnable {
@@ -20,7 +20,7 @@ public abstract class ServerThreadExample implements Runnable {
 	public void run() {
 		while (!terminate) {
 			ServerNetworkThread networkthread = (ServerNetworkThread) server.getNetworkThread();
-			PacketInbound p = ((_ServerNetworkThread) networkthread).getInboundQueue().poll();
+			PacketInbound p = networkthread.poll();
 			if (p != null) {
 				/** Process Packet */
 			}

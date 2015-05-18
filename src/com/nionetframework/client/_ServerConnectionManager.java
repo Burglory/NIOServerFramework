@@ -1,21 +1,22 @@
-package com.nionetframework.client.implementation;
+package com.nionetframework.client;
 
 import java.nio.channels.SocketChannel;
 
-import com.nionetframework.common.api.Connection;
-import com.nionetframework.common.api.NetworkThread;
-import com.nionetframework.common.implementation._Connection;
-import com.nionetframework.common.implementation._ConnectionManager;
+import com.nionetframework.common.Connection;
+import com.nionetframework.common.NetworkThread;
+import com.nionetframework.common._Connection;
+import com.nionetframework.common._ConnectionManager;
 
-public class ServerConnectionManager extends _ConnectionManager {
+class _ServerConnectionManager extends _ConnectionManager implements ServerConnectionManager {
 
-	private Client client;
+	private _Client _Client;
 
-	public ServerConnectionManager(Client client) {
+	_ServerConnectionManager(_Client _Client) {
 		super();
-		this.client = client;
+		this._Client = _Client;
 	}
 	
+	@Override
 	public Connection getServerConnection() {
 		return this._getConnections().iterator().next();
 	}
@@ -29,7 +30,7 @@ public class ServerConnectionManager extends _ConnectionManager {
 
 	@Override
 	public Connection addConnection(SocketChannel s) {
-		ServerConnection c = new ServerConnection(this, s);
+		_ServerConnection c = new _ServerConnection(this, s);
 		this._getConnections().add(c);
 		return c;
 	}
@@ -37,7 +38,7 @@ public class ServerConnectionManager extends _ConnectionManager {
 	@Override
 	public NetworkThread getNetworkThread() {
 		// TODO Auto-generated method stub
-		return client.getNetworkThread();
+		return _Client.getNetworkThread();
 	}
 
 }
