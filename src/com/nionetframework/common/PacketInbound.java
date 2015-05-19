@@ -1,6 +1,5 @@
 package com.nionetframework.common;
 
-
 public class PacketInbound extends Packet {
 
 	private Connection source;

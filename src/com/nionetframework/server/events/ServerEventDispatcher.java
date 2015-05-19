@@ -33,7 +33,10 @@ public class ServerEventDispatcher {
 		}
 	}
 
-	/** Method used by the {@link ServerNetworkThread} to call a {@link ServerEvent}. */
+	/**
+	 * Method used by the {@link ServerNetworkThread} to call a
+	 * {@link ServerEvent}.
+	 */
 	public static void callEvent(ServerEvent e) {
 		for (RegisteredServerEventListener l : getRegisteredeventlisteners()) {
 			l.dispatchEvent(e);

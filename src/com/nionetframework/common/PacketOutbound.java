@@ -11,7 +11,7 @@ public class PacketOutbound extends Packet {
 		super(s);
 		this.destinations = destinations;
 	}
-	
+
 	public PacketOutbound(String s, Connection destination) {
 		super(s);
 		this.destinations = Arrays.asList(destination);

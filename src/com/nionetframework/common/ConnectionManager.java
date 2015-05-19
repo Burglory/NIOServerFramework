@@ -9,7 +9,7 @@ public interface ConnectionManager {
 
 	/** Add a new Connection to this ConnectionManager based on a SocketChannel. */
 	Connection addConnection(SocketChannel s);
-	
+
 	NetworkThread getNetworkThread();
 
 }

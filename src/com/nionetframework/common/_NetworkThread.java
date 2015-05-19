@@ -12,19 +12,20 @@ public abstract class _NetworkThread implements NetworkThread {
 	private ConcurrentLinkedQueue<PacketOutbound> outboundQueue;
 
 	public _NetworkThread() {
-	this.terminate = false;
-	this.interestchangevents = new ConcurrentLinkedQueue<InterestChangeEvent>();
+		this.terminate = false;
+		this.interestchangevents = new ConcurrentLinkedQueue<InterestChangeEvent>();
 
-	this.inboundQueue = new ConcurrentLinkedQueue<PacketInbound>();
-	this.outboundQueue = new ConcurrentLinkedQueue<PacketOutbound>();
-	
+		this.inboundQueue = new ConcurrentLinkedQueue<PacketInbound>();
+		this.outboundQueue = new ConcurrentLinkedQueue<PacketOutbound>();
+
 	}
-	
 
 	public boolean queueInterestChange(InterestChangeEvent e) {
-		return this.getInterestChangeEvents().offer(e);
+		boolean succes = this.getInterestChangeEvents().offer(e);
+		this.wakeup();
+		return succes;
 	}
-	
+
 	public void updateInterests(Selector selector) {
 		while (this.getInterestChangeEvents().size() > 0) {
 			InterestChangeEvent ice = this.getInterestChangeEvents().poll();
@@ -36,15 +37,15 @@ public abstract class _NetworkThread implements NetworkThread {
 	public boolean isTerminated() {
 		return terminate;
 	}
-	
+
 	public void terminate() {
 		this.terminate = true;
 	}
-	
+
 	public ConcurrentLinkedQueue<InterestChangeEvent> getInterestChangeEvents() {
 		return this.interestchangevents;
 	}
-	
+
 	public ConcurrentLinkedQueue<PacketInbound> getInboundQueue() {
 		return inboundQueue;
 	}
@@ -55,9 +56,14 @@ public abstract class _NetworkThread implements NetworkThread {
 	}
 	
 	@Override
+	public abstract void wakeup();
+
+	@Override
 	public void offer(PacketOutbound p) {
 		System.out.println("Starting offering...");
-		for(Connection c : p.getDestinations()) {
+		Connection d = null;
+		for (Connection c : p.getDestinations()) {
+			d=c;
 			System.out.println("Offered packet to: " + c.getAddress());
 			System.out.println("Accepted offer: " + ((_Connection) c).queue(p));
 		}
@@ -67,5 +73,5 @@ public abstract class _NetworkThread implements NetworkThread {
 	public PacketInbound poll() {
 		return this.inboundQueue.poll();
 	}
-	
+
 }

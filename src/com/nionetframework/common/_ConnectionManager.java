@@ -12,26 +12,24 @@ public abstract class _ConnectionManager implements ConnectionManager {
 	private Set<Connection> connections;
 
 	public _ConnectionManager() {
-		Logger.Log("Initializing ConnectionManager...",
-				Logger.MESSAGE);
+		Logger.Log("Initializing ConnectionManager...", Logger.MESSAGE);
 
 		this.connections = Collections
 				.newSetFromMap(new ConcurrentHashMap<Connection, Boolean>());
-		Logger.Log("ConnectionManager succesfully initialized.",
-				Logger.MESSAGE);
+		Logger.Log("ConnectionManager succesfully initialized.", Logger.MESSAGE);
 	}
 
 	@Override
 	public abstract boolean disconnect(Connection c);
-	
+
 	@Override
 	public abstract Connection addConnection(SocketChannel s);
-	
+
 	@Override
 	public abstract NetworkThread getNetworkThread();
 
 	public Set<Connection> _getConnections() {
 		return this.connections;
 	}
-	
+
 }

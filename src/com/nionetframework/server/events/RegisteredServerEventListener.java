@@ -79,9 +79,8 @@ public class RegisteredServerEventListener {
 		}
 		for (Method m : map.get(e.getClass())) {
 			try {
-				Logger.Log("Dispatching ServerEvent for Method: "
-						+ m.getName() + " in Class: "
-						+ m.getDeclaringClass().getName());
+				Logger.Log("Dispatching ServerEvent for Method: " + m.getName()
+						+ " in Class: " + m.getDeclaringClass().getName());
 				m.invoke(eventlistener, e);
 			} catch (IllegalAccessException e1) {
 				// TODO Auto-generated catch block

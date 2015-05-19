@@ -1,21 +1,18 @@
 package com.nionetframework.server;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 
 import com.nionetframework.common.ConnectionManager;
-import com.nionetframework.common.NetworkThread;
 import com.nionetframework.common._ConnectionManager;
 import com.nionetframework.common.logger.Logger;
 
-class _Server implements Server {
+class _Server extends Server {
 
 	private _ConnectionManager connectionmanager;
 	private boolean terminate;
 	private _ServerNetworkThread networkthread;
 	private InetSocketAddress address;
-	
+	private Thread thread;
 
 	_Server() {
 		Logger.Log("Creating Server...", Logger.MESSAGE);
@@ -44,7 +41,7 @@ class _Server implements Server {
 	}
 
 	@Override
-	public NetworkThread getNetworkThread() {
+	public ServerNetworkThread getNetworkThread() {
 		return this.networkthread;
 	}
 
@@ -59,5 +56,16 @@ class _Server implements Server {
 	@Override
 	public void setInetAddress(String hostname, int port) {
 		this.address = new InetSocketAddress(hostname, port);
+	}
+
+	@Override
+	public void start() {
+		this.thread = new Thread(this);
+		this.thread.start();
+	}
+
+	@Override
+	public Thread getThread() {
+		return this.thread;
 	}
 }

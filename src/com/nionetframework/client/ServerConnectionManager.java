@@ -6,4 +6,6 @@ public interface ServerConnectionManager {
 
 	Connection getServerConnection();
 
+	Client getClient();
+
 }

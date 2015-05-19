@@ -11,7 +11,8 @@ import com.nionetframework.server.events.ConnectionCloseEvent;
 import com.nionetframework.server.events.ConnectionNewEvent;
 import com.nionetframework.server.events.ServerEventDispatcher;
 
-class _ClientConnectionManager extends _ConnectionManager implements ClientConnectionManager {
+class _ClientConnectionManager extends _ConnectionManager implements
+		ClientConnectionManager {
 
 	private Server server;
 
@@ -19,7 +20,7 @@ class _ClientConnectionManager extends _ConnectionManager implements ClientConne
 		super();
 		this.server = server;
 	}
-	
+
 	@Override
 	public Server getServer() {
 		return this.server;
@@ -29,14 +30,13 @@ class _ClientConnectionManager extends _ConnectionManager implements ClientConne
 	public NetworkThread getNetworkThread() {
 		return server.getNetworkThread();
 	}
-	
+
 	@Override
 	public boolean disconnect(Connection c) {
 		((_Connection) c)._terminateSocketChannel();
 		this._getConnections().remove(((_Connection) c));
-		Logger.Log(
-				"(ConnectionManager): Connection from: " + c.getAddress()
-						+ " has been removed.", Logger.DEBUG);
+		Logger.Log("(ConnectionManager): Connection from: " + c.getAddress()
+				+ " has been removed.", Logger.DEBUG);
 		ServerEventDispatcher.callEvent(new ConnectionCloseEvent(c, "closed"));
 		return false;
 	}
@@ -45,9 +45,8 @@ class _ClientConnectionManager extends _ConnectionManager implements ClientConne
 	public Connection addConnection(SocketChannel s) {
 		_Connection c = new _ClientConnection(this, s);
 		this._getConnections().add(c);
-		Logger.Log(
-				"(ConnectionManager): Connection from: " + c.getAddress()
-						+ " has been added.", Logger.DEBUG);
+		Logger.Log("(ConnectionManager): Connection from: " + c.getAddress()
+				+ " has been added.", Logger.DEBUG);
 		ServerEventDispatcher.callEvent(new ConnectionNewEvent(c));
 		return c;
 	}

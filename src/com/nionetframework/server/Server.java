@@ -1,16 +1,25 @@
 package com.nionetframework.server;
 
 import com.nionetframework.common.ConnectionManager;
-import com.nionetframework.common.NetworkThread;
 
-public interface Server extends Runnable {
+public abstract class Server implements Runnable {
 
-	ConnectionManager getConnectionManager();
+	public abstract ConnectionManager getConnectionManager();
 
-	void terminate();
+	public abstract void terminate();
 
-	NetworkThread getNetworkThread();
+	public abstract ServerNetworkThread getNetworkThread();
 
-	void setInetAddress(String hostname, int port);
-	
+	public abstract void setInetAddress(String hostname, int port);
+
+	public abstract void start();
+
+	public abstract Thread getThread();
+
+	public static final Server getDefaultServer() {
+		Server server = new _Server();
+		server.setInetAddress("localhost", 8500);
+		return server;
+	}
+
 }

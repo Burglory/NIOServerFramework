@@ -7,6 +7,7 @@ import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.nionetframework.common.logger.Logger;
+import com.nionetframework.server.ServerNetworkThread;
 
 public abstract class _Connection implements Connection {
 
@@ -55,11 +56,13 @@ public abstract class _Connection implements Connection {
 				amount_read = socketchannel.read(headerreadbuffer);
 			} catch (IOException e) {
 
-				e.printStackTrace();
+				//e.printStackTrace();
+				Logger.Log("An existing connection was forcibly closed by the remote host", Logger.MESSAGE);
 				this.connectionmanager.disconnect(this);
 				return false;
 			}
 			if (amount_read == -1) {
+				Logger.Log("An existing connection was cleanly closed by the remote host", Logger.MESSAGE);
 				this.connectionmanager.disconnect(this);
 				return false;
 				// socketchannel.close();
@@ -82,11 +85,13 @@ public abstract class _Connection implements Connection {
 				amount_read = socketchannel.read(readbuffer);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				Logger.Log("An existing connection was forcibly closed by the remote host", Logger.MESSAGE);
 				this.connectionmanager.disconnect(this);
 				return false;
 			}
 			if (amount_read == -1) {
+				Logger.Log("An existing connection was cleanly closed by the remote host", Logger.MESSAGE);
 				this.connectionmanager.disconnect(this);
 				return false;
 				// socketchannel.close();
@@ -120,42 +125,58 @@ public abstract class _Connection implements Connection {
 
 	private boolean writeHeader() {
 		// Writing packetsize
+		int amount_read = -1;
 		if (headerwritebuffer.hasRemaining()) {
 			System.out.println("Writing the header: "
 					+ this.currentwritepacket.getData());
 			try {
-				socketchannel.write(headerwritebuffer);
+				amount_read = socketchannel.write(headerwritebuffer);
 			} catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				Logger.Log("An existing connection was forcibly closed by the remote host", Logger.MESSAGE);
 				this.connectionmanager.disconnect(this);
 				return false;
 			}
+			if (amount_read == -1) {
+				Logger.Log("An existing connection was cleanly closed by the remote host", Logger.MESSAGE);
+				this.connectionmanager.disconnect(this);
+				return false;
+				// socketchannel.close();
+			}
 		}
+		 ((_NetworkThread) connectionmanager.getNetworkThread())
+		 .queueInterestChange(new _InterestChangeEvent(
+		 socketchannel, SelectionKey.OP_WRITE));
 		if (!headerwritebuffer.hasRemaining()) {
 			this.iswritingheader = false;
 			// Prepare packet for writing!
 			writebuffer = ByteBuffer.wrap(currentwritepacket.getBytes());
-			// ((_ServerNetworkThread) connectionmanager.getNetworkThread())
-			// .queueInterestChange(new _InterestChangeEvent(
-			// socketchannel, SelectionKey.OP_READ));
+			//Focus on writing?
 		} else {
-			// ((_ServerNetworkThread) connectionmanager.getNetworkThread())
-			// .queueInterestChange(new _InterestChangeEvent(
-			// socketchannel, SelectionKey.OP_WRITE));
+//			 ((_NetworkThread) connectionmanager.getNetworkThread())
+//			 .queueInterestChange(new _InterestChangeEvent(
+//			 socketchannel, SelectionKey.OP_WRITE));
 		}
 		return true;
 	}
 
 	private boolean writeBody() {
+		int amount_read = -1;
 		if (writebuffer.hasRemaining()) {
 			System.out.println("Writing the body: "
 					+ this.currentwritepacket.getData());
 			try {
-				socketchannel.write(writebuffer);
+				amount_read = socketchannel.write(writebuffer);
 			} catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				this.connectionmanager.disconnect(this);
 				return false;
+			}
+			if (amount_read == -1) {
+				Logger.Log("An existing connection was cleanly closed by the remote host", Logger.MESSAGE);
+				this.connectionmanager.disconnect(this);
+				return false;
+				// socketchannel.close();
 			}
 		}
 		if (!writebuffer.hasRemaining()) {
@@ -164,15 +185,17 @@ public abstract class _Connection implements Connection {
 			System.out.println("Packet succesfully written: "
 					+ this.currentwritepacket.getData());
 			currentwritepacket = null;
-			// ((_ServerNetworkThread) connectionmanager.getNetworkThread())
-			// .queueInterestChange(new _InterestChangeEvent(
-			// socketchannel, SelectionKey.OP_READ));
+			if(this.queue.isEmpty()) {
+				 ((_NetworkThread) connectionmanager.getNetworkThread())
+				 .queueInterestChange(new _InterestChangeEvent(
+				 socketchannel, SelectionKey.OP_READ));
+			}
+
 		} else {
-			// Focus on writing.
-			// ((_ServerNetworkThread) ((_Server)
-			// server).getNetworkThread()).queueInterestChange(
-			// new _InterestChangeEvent(socketchannel,
-			// SelectionKey.OP_WRITE));
+			// Focus on writing?
+			 ((_NetworkThread) connectionmanager.getNetworkThread())
+			 .queueInterestChange(new _InterestChangeEvent(
+			 socketchannel, SelectionKey.OP_WRITE));
 		}
 		return true;
 	}
@@ -216,9 +239,9 @@ public abstract class _Connection implements Connection {
 	 */
 	public boolean queue(Packet p) {
 		boolean succes = this.queue.offer(p);
-		// ((_ServerNetworkThread) connectionmanager.getNetworkThread())
-		// .queueInterestChange(new _InterestChangeEvent(socketchannel,
-		// SelectionKey.OP_WRITE));
+		 ((_NetworkThread) connectionmanager.getNetworkThread())
+		 .queueInterestChange(new _InterestChangeEvent(socketchannel,
+		 SelectionKey.OP_WRITE));
 		return succes;
 	}
 

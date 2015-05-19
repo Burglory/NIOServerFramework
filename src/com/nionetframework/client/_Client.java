@@ -1,10 +1,8 @@
 package com.nionetframework.client;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 import com.nionetframework.common.ConnectionManager;
-import com.nionetframework.common.NetworkThread;
 import com.nionetframework.common._ConnectionManager;
 import com.nionetframework.common.logger.Logger;
 
@@ -14,13 +12,12 @@ class _Client extends Client {
 	private boolean terminate;
 	private _ClientNetworkThread networkthread;
 	private InetSocketAddress address;
+	private Thread thread;
 
 	_Client() {
 		Logger.Log("Creating _Client...", Logger.MESSAGE);
 
 		this.connectionmanager = new _ServerConnectionManager(this);
-
-		this.terminate = false;
 
 	}
 
@@ -28,7 +25,8 @@ class _Client extends Client {
 	public ConnectionManager getConnectionManager() {
 		return this.connectionmanager;
 	}
-	
+
+	@Override
 	public void terminate() {
 		this.terminate = true;
 		if (this.networkthread != null) {
@@ -41,19 +39,15 @@ class _Client extends Client {
 	}
 
 	@Override
-	public NetworkThread getNetworkThread() {
+	public ClientNetworkThread getNetworkThread() {
 		return this.networkthread;
-	}
-
-	public void start(String ip, String port) {
-
-		Thread  t= new Thread();
-		t.start();
-//		Logger.Log("Stopping _Client...", Logger.MESSAGE);
 	}
 
 	@Override
 	public void run() {
+		if (this.terminate == true)
+			return;
+		this.terminate = false;
 		this.networkthread = new _ClientNetworkThread(this, address);
 		Logger.Log("Entering NetworkThread...", Logger.MESSAGE);
 		this.networkthread.run();
@@ -63,6 +57,17 @@ class _Client extends Client {
 	@Override
 	public void setInetAddress(InetSocketAddress address) {
 		this.address = address;
+	}
+
+	@Override
+	public void start() {
+		this.thread = new Thread(this);
+		thread.start();
+	}
+
+	@Override
+	public Thread getThread() {
+		return this.thread;
 	}
 
 }

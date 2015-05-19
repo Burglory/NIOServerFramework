@@ -10,23 +10,21 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
 import com.nionetframework.common.Connection;
-import com.nionetframework.common.InterestChangeEvent;
-import com.nionetframework.common.PacketInbound;
-import com.nionetframework.common.PacketOutbound;
 import com.nionetframework.common._Connection;
 import com.nionetframework.common._NetworkThread;
 import com.nionetframework.common.logger.Logger;
 
-class _ServerNetworkThread extends _NetworkThread implements ServerNetworkThread {
+class _ServerNetworkThread extends _NetworkThread implements
+		ServerNetworkThread {
 
-	private String port;
-//	private boolean terminate;
+	// private boolean terminate;
 	private Selector selector;
 	private Server server;
 	private InetSocketAddress address;
-//	private ConcurrentLinkedQueue<InterestChangeEvent> interestchangevents;
-//	private final ConcurrentLinkedQueue<PacketInbound> inboundQueue;
-//	private final ConcurrentLinkedQueue<PacketOutbound> outboundQueue;
+
+	// private ConcurrentLinkedQueue<InterestChangeEvent> interestchangevents;
+	// private final ConcurrentLinkedQueue<PacketInbound> inboundQueue;
+	// private final ConcurrentLinkedQueue<PacketOutbound> outboundQueue;
 
 	_ServerNetworkThread(Server server, InetSocketAddress i) {
 		super();
@@ -34,34 +32,29 @@ class _ServerNetworkThread extends _NetworkThread implements ServerNetworkThread
 		this.server = server;
 		this.address = i;
 
-		Logger.Log("NetworkManager succesfully initialized.",
-				Logger.MESSAGE);
+		Logger.Log("NetworkManager succesfully initialized.", Logger.MESSAGE);
 	}
 
 	@Override
 	public void run() {
-		Logger
-				.Log("Opening ServerSocketChannel...", Logger.MESSAGE);
+		Logger.Log("Opening ServerSocketChannel...", Logger.MESSAGE);
 		ServerSocketChannel serverChannel = null;
 		try {
 			serverChannel = ServerSocketChannel.open();
 		} catch (IOException e1) {
-			Logger.Log("Failed to open ServerSocketChannel",
-					Logger.FATAL);
+			Logger.Log("Failed to open ServerSocketChannel", Logger.FATAL);
 			System.exit(1);
 		}
-		Logger.Log("Opening ServerSocketChannel was succesful!",
-				Logger.MESSAGE);
+		Logger.Log("Opening ServerSocketChannel was succesful!", Logger.MESSAGE);
 		try {
 			serverChannel.configureBlocking(false);
 		} catch (IOException e1) {
-			Logger
-					.Log("Failed to set blocking to false for the ServerSocketChannel",
-							Logger.FATAL);
+			Logger.Log(
+					"Failed to set blocking to false for the ServerSocketChannel",
+					Logger.FATAL);
 			System.exit(1);
 		}
-		Logger.Log("Setting blocking to false was succesful!",
-				Logger.MESSAGE);
+		Logger.Log("Setting blocking to false was succesful!", Logger.MESSAGE);
 		Logger.Log("Opening Selector...", Logger.MESSAGE);
 		try {
 			selector = Selector.open();
@@ -78,10 +71,8 @@ class _ServerNetworkThread extends _NetworkThread implements ServerNetworkThread
 					Logger.FATAL);
 			System.exit(1);
 		}
-		Logger.Log("Registration of Selector was succesful!",
-				Logger.MESSAGE);
-		Logger.Log("Binding to: " + "localhost:" + port,
-				Logger.MESSAGE);
+		Logger.Log("Registration of Selector was succesful!", Logger.MESSAGE);
+		Logger.Log("Binding to: " + address.toString(), Logger.MESSAGE);
 		try {
 			serverChannel.bind(address);
 		} catch (NumberFormatException e1) {
@@ -102,30 +93,29 @@ class _ServerNetworkThread extends _NetworkThread implements ServerNetworkThread
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try {
+//				Thread.sleep(500);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 		Logger.Log("Exiting Loop...", Logger.MESSAGE);
 	}
 
-
-
 	private void accept(SelectionKey key) {
 		try {
-			
+
 			SocketChannel socketChannel = ((ServerSocketChannel) key.channel())
 					.accept();
 			Logger.Log("New connection from: "
-					+ socketChannel.getRemoteAddress().toString(), Logger.MESSAGE);
+					+ socketChannel.getRemoteAddress().toString(),
+					Logger.MESSAGE);
 			socketChannel.configureBlocking(false);
 			SelectionKey readKey = socketChannel.register(selector,
-					SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-			Connection newconnection = server.getConnectionManager().addConnection(
-					socketChannel);
+					SelectionKey.OP_READ);
+			Connection newconnection = server.getConnectionManager()
+					.addConnection(socketChannel);
 			readKey.attach(newconnection);
 
 		} catch (IOException e) {
@@ -137,7 +127,9 @@ class _ServerNetworkThread extends _NetworkThread implements ServerNetworkThread
 	private void loop() throws Throwable {
 		updateInterests(selector);
 
-		selector.selectNow();
+//		selector.selectNow();
+		selector.select();
+		System.out.println("Selecting keys...");
 
 		Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
 		// Logger.Log("(ServerThread): Current amount of selected keys: "
@@ -161,6 +153,11 @@ class _ServerNetworkThread extends _NetworkThread implements ServerNetworkThread
 
 		}
 
+	}
+	
+	@Override
+	public void wakeup() {
+		this.selector.wakeup();
 	}
 
 }
