@@ -16,7 +16,7 @@ import com.nionetframework.common.PacketInbound;
 import com.nionetframework.common.PacketOutbound;
 import com.nionetframework.common._Connection;
 import com.nionetframework.common._NetworkThread;
-import com.nionetframework.common.logger.Logger;
+import com.nionetframework.common.logger.NetworkLogger;
 
 class _ClientNetworkThread extends _NetworkThread implements
 		ClientNetworkThread {
@@ -57,17 +57,17 @@ class _ClientNetworkThread extends _NetworkThread implements
 			channel.connect(address);
 			channel.register(selector, SelectionKey.OP_CONNECT);
 		} catch (SocketException e) {
-			Logger.Log(
+			NetworkLogger.Log(
 					"Running ClientNetworkThread Failed. Reason: "
-							+ e.getMessage(), Logger.FATAL);
+							+ e.getMessage(), NetworkLogger.FATAL);
 		} catch (ClosedChannelException e) {
-			Logger.Log(
+			NetworkLogger.Log(
 					"Running ClientNetworkThread Failed. Reason: "
-							+ e.getMessage(), Logger.FATAL);
+							+ e.getMessage(), NetworkLogger.FATAL);
 		} catch (IOException e) {
-			Logger.Log(
+			NetworkLogger.Log(
 					"Running ClientNetworkThread Failed. Reason: "
-							+ e.getMessage(), Logger.FATAL);
+							+ e.getMessage(), NetworkLogger.FATAL);
 		}
 
 		while (!isTerminated()) {
@@ -79,9 +79,9 @@ class _ClientNetworkThread extends _NetworkThread implements
 //			try {
 //				Thread.sleep(500);
 //			} catch (InterruptedException e) {
-//				Logger.Log(
+//				NetworkLogger.Log(
 //						"ClientNetworkThread has been interrupted while sleeping. Reason: "
-//								+ e.getMessage(), Logger.WARNING);
+//								+ e.getMessage(), NetworkLogger.WARNING);
 //			}
 		}
 	}
@@ -94,8 +94,8 @@ class _ClientNetworkThread extends _NetworkThread implements
 		System.out.println("Selecting keys...");
 		
 		Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
-		// Logger.Log("(ServerThread): Current amount of selected keys: "
-		// + selector.selectedKeys().size(), Logger.DEBUG);
+		// NetworkLogger.Log("(ServerThread): Current amount of selected keys: "
+		// + selector.selectedKeys().size(), NetworkLogger.DEBUG);
 
 		while (iterator.hasNext()) {
 			SelectionKey key = iterator.next();
@@ -121,8 +121,8 @@ class _ClientNetworkThread extends _NetworkThread implements
 		SocketChannel ch = (SocketChannel) key.channel();
 		try {
 			if (ch.finishConnect()) {
-				Logger.Log("Connected to: " + ch.getRemoteAddress().toString(),
-						Logger.EVENT);
+				NetworkLogger.Log("Connected to: " + ch.getRemoteAddress().toString(),
+						NetworkLogger.EVENT);
 				// key.interestOps(key.interestOps() ^ SelectionKey.OP_CONNECT);
 				SelectionKey readKey = key.interestOps(SelectionKey.OP_READ);
 				Connection newconnection = _Client.getConnectionManager()
@@ -131,7 +131,7 @@ class _ClientNetworkThread extends _NetworkThread implements
 				return true;
 			}
 		} catch (IOException e) {
-			Logger.Log("Failed to connect to Server on: "
+			NetworkLogger.Log("Failed to connect to Server on: "
 					+ this.address.toString() + "	Reason: " + e.getMessage());
 		}
 		return false;

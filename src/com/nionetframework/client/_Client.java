@@ -4,7 +4,7 @@ import java.net.InetSocketAddress;
 
 import com.nionetframework.common.ConnectionManager;
 import com.nionetframework.common._ConnectionManager;
-import com.nionetframework.common.logger.Logger;
+import com.nionetframework.common.logger.NetworkLogger;
 
 class _Client extends Client {
 
@@ -15,7 +15,7 @@ class _Client extends Client {
 	private Thread thread;
 
 	_Client() {
-		Logger.Log("Creating _Client...", Logger.MESSAGE);
+		NetworkLogger.Log("Creating _Client...", NetworkLogger.MESSAGE);
 
 		this.connectionmanager = new _ServerConnectionManager(this);
 
@@ -32,9 +32,9 @@ class _Client extends Client {
 		if (this.networkthread != null) {
 			this.networkthread.terminate();
 		} else {
-			Logger.Log(
+			NetworkLogger.Log(
 					"_Client cannot be terminated, because it has not started!",
-					Logger.WARNING);
+					NetworkLogger.WARNING);
 		}
 	}
 
@@ -49,9 +49,9 @@ class _Client extends Client {
 			return;
 		this.terminate = false;
 		this.networkthread = new _ClientNetworkThread(this, address);
-		Logger.Log("Entering NetworkThread...", Logger.MESSAGE);
+		NetworkLogger.Log("Entering NetworkThread...", NetworkLogger.MESSAGE);
 		this.networkthread.run();
-		Logger.Log("Exiting NetworkThread...", Logger.MESSAGE);
+		NetworkLogger.Log("Exiting NetworkThread...", NetworkLogger.MESSAGE);
 	}
 
 	@Override

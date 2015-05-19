@@ -3,7 +3,7 @@ package com.nionetframework.server.events;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.nionetframework.common.logger.Logger;
+import com.nionetframework.common.logger.NetworkLogger;
 import com.nionetframework.server.ServerNetworkThread;
 
 public class ServerEventDispatcher {
@@ -15,8 +15,8 @@ public class ServerEventDispatcher {
 	 * {@link ServerEvents} Annotation.
 	 */
 	public static void registerListener(ServerEventListener l) {
-		Logger.Log("Registering Listener: " + l.getClass().getName(),
-				Logger.DEBUG);
+		NetworkLogger.Log("Registering Listener: " + l.getClass().getName(),
+				NetworkLogger.DEBUG);
 		getRegisteredeventlisteners().add(new RegisteredServerEventListener(l));
 	}
 

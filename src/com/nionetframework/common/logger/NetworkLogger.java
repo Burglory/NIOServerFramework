@@ -3,7 +3,7 @@ package com.nionetframework.common.logger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Logger {
+public class NetworkLogger {
 
 	public static final int DEBUG = 0;
 	public static final int MESSAGE = 1;

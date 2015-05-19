@@ -6,7 +6,7 @@ import java.util.Scanner;
 import com.nionetframework.client.Client;
 import com.nionetframework.common.Packet;
 import com.nionetframework.common.PacketInbound;
-import com.nionetframework.common.logger.Logger;
+import com.nionetframework.common.logger.NetworkLogger;
 
 public class ClientExample {
 
@@ -18,21 +18,21 @@ public class ClientExample {
 	private Client client;
 
 	public ClientExample() {
-		Logger.setLogLevel(Logger.DEBUG);
+		NetworkLogger.setLogLevel(NetworkLogger.DEBUG);
 
 		this.client = Client.getDefaultClient();
 		client.setInetAddress(new InetSocketAddress("localhost", 8500));
 		client.start();
 		this.scanner = new Scanner(System.in);
 		this.loop();
-		Logger.Log("Starting System In Loop...", Logger.DEBUG);
+		NetworkLogger.Log("Starting System In Loop...", NetworkLogger.DEBUG);
 
 	}
 
 	private void loop() {
 		while (client.getThread().isAlive()) {
 			String message = scanner.nextLine();
-			Logger.Log("Sending: " + message, Logger.MESSAGE);
+			NetworkLogger.Log("Sending: " + message, NetworkLogger.MESSAGE);
 			client.getNetworkThread().offer(new Packet(message));
 			PacketInbound p = client.getNetworkThread().poll();
 			if (p != null) {

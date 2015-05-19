@@ -6,7 +6,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.nionetframework.common.logger.Logger;
+import com.nionetframework.common.logger.NetworkLogger;
 import com.nionetframework.server.ServerNetworkThread;
 
 public abstract class _Connection implements Connection {
@@ -57,12 +57,12 @@ public abstract class _Connection implements Connection {
 			} catch (IOException e) {
 
 				//e.printStackTrace();
-				Logger.Log("An existing connection was forcibly closed by the remote host", Logger.MESSAGE);
+				NetworkLogger.Log("An existing connection was forcibly closed by the remote host", NetworkLogger.MESSAGE);
 				this.connectionmanager.disconnect(this);
 				return false;
 			}
 			if (amount_read == -1) {
-				Logger.Log("An existing connection was cleanly closed by the remote host", Logger.MESSAGE);
+				NetworkLogger.Log("An existing connection was cleanly closed by the remote host", NetworkLogger.MESSAGE);
 				this.connectionmanager.disconnect(this);
 				return false;
 				// socketchannel.close();
@@ -86,12 +86,12 @@ public abstract class _Connection implements Connection {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
-				Logger.Log("An existing connection was forcibly closed by the remote host", Logger.MESSAGE);
+				NetworkLogger.Log("An existing connection was forcibly closed by the remote host", NetworkLogger.MESSAGE);
 				this.connectionmanager.disconnect(this);
 				return false;
 			}
 			if (amount_read == -1) {
-				Logger.Log("An existing connection was cleanly closed by the remote host", Logger.MESSAGE);
+				NetworkLogger.Log("An existing connection was cleanly closed by the remote host", NetworkLogger.MESSAGE);
 				this.connectionmanager.disconnect(this);
 				return false;
 				// socketchannel.close();
@@ -106,8 +106,8 @@ public abstract class _Connection implements Connection {
 			// Schedule packet for processing.
 			((_NetworkThread) connectionmanager.getNetworkThread())
 					.getInboundQueue().offer(p);
-			Logger.Log("Received message from: " + this.getAddress()
-					+ " saying: " + p.getData(), Logger.DEBUG);
+			NetworkLogger.Log("Received message from: " + this.getAddress()
+					+ " saying: " + p.getData(), NetworkLogger.DEBUG);
 			// Prepare to read the next packetsize.
 			headerreadbuffer.position(0).limit(HEADER_SIZE);
 			this.isreadingheader = true;
@@ -133,12 +133,12 @@ public abstract class _Connection implements Connection {
 				amount_read = socketchannel.write(headerwritebuffer);
 			} catch (IOException e) {
 				//e.printStackTrace();
-				Logger.Log("An existing connection was forcibly closed by the remote host", Logger.MESSAGE);
+				NetworkLogger.Log("An existing connection was forcibly closed by the remote host", NetworkLogger.MESSAGE);
 				this.connectionmanager.disconnect(this);
 				return false;
 			}
 			if (amount_read == -1) {
-				Logger.Log("An existing connection was cleanly closed by the remote host", Logger.MESSAGE);
+				NetworkLogger.Log("An existing connection was cleanly closed by the remote host", NetworkLogger.MESSAGE);
 				this.connectionmanager.disconnect(this);
 				return false;
 				// socketchannel.close();
@@ -173,7 +173,7 @@ public abstract class _Connection implements Connection {
 				return false;
 			}
 			if (amount_read == -1) {
-				Logger.Log("An existing connection was cleanly closed by the remote host", Logger.MESSAGE);
+				NetworkLogger.Log("An existing connection was cleanly closed by the remote host", NetworkLogger.MESSAGE);
 				this.connectionmanager.disconnect(this);
 				return false;
 				// socketchannel.close();
@@ -249,9 +249,9 @@ public abstract class _Connection implements Connection {
 		try {
 			this.socketchannel.close();
 		} catch (IOException e) {
-			Logger.Log(
+			NetworkLogger.Log(
 					"(Connection) Failed to close the connection manually. Is it already closed?",
-					Logger.WARNING);
+					NetworkLogger.WARNING);
 			e.printStackTrace();
 		}
 	}

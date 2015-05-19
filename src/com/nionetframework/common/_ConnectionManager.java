@@ -5,18 +5,18 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.nionetframework.common.logger.Logger;
+import com.nionetframework.common.logger.NetworkLogger;
 
 public abstract class _ConnectionManager implements ConnectionManager {
 
 	private Set<Connection> connections;
 
 	public _ConnectionManager() {
-		Logger.Log("Initializing ConnectionManager...", Logger.MESSAGE);
+		NetworkLogger.Log("Initializing ConnectionManager...", NetworkLogger.MESSAGE);
 
 		this.connections = Collections
 				.newSetFromMap(new ConcurrentHashMap<Connection, Boolean>());
-		Logger.Log("ConnectionManager succesfully initialized.", Logger.MESSAGE);
+		NetworkLogger.Log("ConnectionManager succesfully initialized.", NetworkLogger.MESSAGE);
 	}
 
 	@Override
