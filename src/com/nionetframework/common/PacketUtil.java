@@ -14,7 +14,7 @@ public class PacketUtil {
 	// int datalength = bb.getInt();
 	// byte[] data = new byte[datalength];
 	// bb.get(data);
-	// return new _Packet(source, packettype, new String(data));
+	// return new Packet(source, packettype, new String(data));
 	// }
 
 	// public static boolean isReponse(Packet request, Packet response) {

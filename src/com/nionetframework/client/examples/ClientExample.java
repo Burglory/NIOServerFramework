@@ -11,7 +11,6 @@ import com.nionetframework.client.ServerConnectionManager;
 import com.nionetframework.common.Connection;
 import com.nionetframework.common.PacketInbound;
 import com.nionetframework.common.PacketOutbound;
-import com.nionetframework.common.Packets;
 import com.nionetframework.common.logger.Logger;
 
 public class ClientExample {
@@ -40,7 +39,7 @@ public class ClientExample {
 		while(true) {
 			String message = scanner.nextLine();
 			Logger.Log("Sending: " + message, Logger.MESSAGE);
-			 client.getNetworkThread().offer(Packets.generateOutboundPacket(message, Arrays.asList(((ServerConnectionManager) client.getConnectionManager()).getServerConnection())));
+			 client.getNetworkThread().offer(new PacketOutbound(message, ((ServerConnectionManager) client.getConnectionManager()).getServerConnection()));
 			PacketInbound p = client.getNetworkThread().poll();
 			if(p!=null) {
 				System.out.println("Server says: " + p.getData());

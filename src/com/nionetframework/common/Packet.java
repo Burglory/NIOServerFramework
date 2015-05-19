@@ -1,10 +1,23 @@
 package com.nionetframework.common;
 
-public interface Packet {
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
-	int getType();
+public class Packet {
 
-	String getData();
+	private String data;
+	public static final Charset charset = StandardCharsets.UTF_8;
 
-	byte[] getBytes();
+	public Packet(String s) {
+		this.data = s;
+	}
+
+	public String getData() {
+		return this.data;
+	}
+
+	public byte[] getBytes() {
+		return this.data.getBytes();
+	}
+
 }

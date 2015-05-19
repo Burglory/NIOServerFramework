@@ -97,7 +97,7 @@ public abstract class _Connection implements Connection {
 			readbuffer.rewind();
 			byte[] packet = new byte[readbuffer.remaining()];
 			readbuffer.get(packet);
-			PacketInbound p = new _PacketInbound(packet, this);
+			PacketInbound p = new PacketInbound(packet, this);
 			// Schedule packet for processing.
 			((_NetworkThread) connectionmanager.getNetworkThread())
 					.getInboundQueue().offer(p);
