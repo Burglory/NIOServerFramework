@@ -17,6 +17,16 @@ public class PacketOutbound extends Packet {
 		this.destinations = Arrays.asList(destination);
 	}
 
+	public PacketOutbound(byte[] data, Collection<Connection> destinations) {
+		super(data);
+		this.destinations = destinations;
+	}
+
+	public PacketOutbound(byte[] data, Connection destination) {
+		super(data);
+		this.destinations = Arrays.asList(destination);
+	}
+	
 	public Collection<Connection> getDestinations() {
 		return this.destinations;
 	}
