@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.nionetframework.common.logger.NetworkLogger;
@@ -107,7 +108,7 @@ public abstract class _Connection implements Connection {
 			((_NetworkThread) connectionmanager.getNetworkThread())
 					.getInboundQueue().offer(p);
 			NetworkLogger.Log("Received message from: " + this.getAddress()
-					+ " saying: " + p.getData(), NetworkLogger.DEBUG);
+					+ " saying: " + new String(p.getBytes(), StandardCharsets.UTF_8), NetworkLogger.DEBUG);
 			// Prepare to read the next packetsize.
 			headerreadbuffer.position(0).limit(HEADER_SIZE);
 			this.isreadingheader = true;
@@ -127,8 +128,7 @@ public abstract class _Connection implements Connection {
 		// Writing packetsize
 		int amount_read = -1;
 		if (headerwritebuffer.hasRemaining()) {
-			System.out.println("Writing the header: "
-					+ this.currentwritepacket.getData());
+			System.out.println("Writing the header...");
 			try {
 				amount_read = socketchannel.write(headerwritebuffer);
 			} catch (IOException e) {
@@ -163,8 +163,7 @@ public abstract class _Connection implements Connection {
 	private boolean writeBody() {
 		int amount_read = -1;
 		if (writebuffer.hasRemaining()) {
-			System.out.println("Writing the body: "
-					+ this.currentwritepacket.getData());
+			System.out.println("Writing the body...");
 			try {
 				amount_read = socketchannel.write(writebuffer);
 			} catch (IOException e) {
@@ -183,7 +182,7 @@ public abstract class _Connection implements Connection {
 			this.iswritingheader = true;
 			// We are done with this packet!
 			System.out.println("Packet succesfully written: "
-					+ this.currentwritepacket.getData());
+					+new String(this.currentwritepacket.getBytes(), StandardCharsets.UTF_8));
 			currentwritepacket = null;
 			if(this.queue.isEmpty()) {
 				 ((_NetworkThread) connectionmanager.getNetworkThread())
@@ -214,7 +213,7 @@ public abstract class _Connection implements Connection {
 				// We have a packet to write!
 				this.iswritingheader = true;
 				System.out.println("We need to write a packet!: "
-						+ this.currentwritepacket.getData());
+						+ new String(this.currentwritepacket.getBytes(), StandardCharsets.UTF_8));
 				headerwritebuffer.position(0).limit(HEADER_SIZE);
 				headerwritebuffer.putInt(currentwritepacket.getBytes().length);
 				headerwritebuffer.rewind();

@@ -1,5 +1,6 @@
 package com.nionetframework.server.examples;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 import com.nionetframework.common.Connection;
@@ -45,10 +46,10 @@ public class ServerExample implements ServerEventListener {
 			if(connection==null) continue;
 			String message = scanner.nextLine();
 			NetworkLogger.Log("Sending: " + message, NetworkLogger.MESSAGE);
-			server.getNetworkThread().offer(new PacketOutbound(message, connection));
+			server.getNetworkThread().offer(new PacketOutbound(message.getBytes(StandardCharsets.UTF_8), connection));
 			PacketInbound p = server.getNetworkThread().poll();
 			if (p != null) {
-				System.out.println("Client says: " + p.getData());
+				System.out.println("Client says: " + new String(p.getBytes(), StandardCharsets.UTF_8));
 			}
 //			try {
 //				Thread.sleep(1000);

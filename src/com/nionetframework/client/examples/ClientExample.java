@@ -1,6 +1,7 @@
 package com.nionetframework.client.examples;
 
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 import com.nionetframework.client.Client;
@@ -33,10 +34,10 @@ public class ClientExample {
 		while (client.getThread().isAlive()) {
 			String message = scanner.nextLine();
 			NetworkLogger.Log("Sending: " + message, NetworkLogger.MESSAGE);
-			client.getNetworkThread().offer(new Packet(message));
+			client.getNetworkThread().offer(new Packet(message.getBytes(StandardCharsets.UTF_8)));
 			PacketInbound p = client.getNetworkThread().poll();
 			if (p != null) {
-				System.out.println("Server says: " + p.getData());
+				System.out.println("Server says: " + new String(p.getBytes(), StandardCharsets.UTF_8));
 			}
 //			try {
 //				Thread.sleep(1000);
